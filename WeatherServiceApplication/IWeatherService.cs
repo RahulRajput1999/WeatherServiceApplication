@@ -18,6 +18,8 @@ namespace WeatherServiceApplication
         string Unsubscribe();
         [OperationContract(IsOneWay = true)]
         void Broadcast(Message message);
+        /*[OperationContract(IsOneWay = false, IsInitiating = true)]
+        Message[] GetHistory();*/
     }
     public interface ICallBackService
     {

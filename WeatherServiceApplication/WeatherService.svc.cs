@@ -52,19 +52,14 @@ namespace WeatherServiceApplication
             try
             {
                 icbs = OperationContext.Current.GetCallbackChannel<ICallBackService>();
-                SqlConnection connection = new SqlConnection(connectionString);
-                SqlCommand cmd = new SqlCommand();
-                connection.Open();
-                cmd.Connection = connection;
-                cmd.CommandText = "INSERT INTO Subscribers(subscriber) VALUES (@object)";
-                cmd.Parameters.AddWithValue("@object", icbs);
                 subscribers.Add(icbs);
+                Console.WriteLine(icbs.ToString());
                 return "Successfully subscribed for weather updates!";
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return "Something went wrong! Please try after some time.";
+                return e.Message;
             }
 
 
@@ -86,6 +81,32 @@ namespace WeatherServiceApplication
                 Console.WriteLine(e.Message);
                 return "Something went wrong! Try after some time.";
             }
+        }
+
+        public Message[] GetHistory()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand cmd = new SqlCommand();
+            connection.Open();
+            cmd.Connection = connection;
+            cmd.CommandText = "SELECT TOP 10 * FROM Weather ORDER BY Id DESC;";
+            SqlDataReader reader = cmd.ExecuteReader();
+            Message[] messages = new Message[10];
+            int i = 0;
+            while (reader.Read())
+            {
+
+                Message m = new Message();
+                m.Place = reader.GetString(1);
+                m.Time = reader.GetTimeSpan(2).ToString();
+                m.Temp = reader.GetDecimal(3).ToString();
+                m.WindSpeed = reader.GetDecimal(4).ToString();
+                m.Humidity = reader.GetDecimal(5).ToString();
+                messages[i] = m;
+                i++;
+            }
+
+            return messages;
         }
     }
 }
