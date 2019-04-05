@@ -3,31 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.ServiceModel.Web;
 using System.Text;
 
 namespace WeatherServiceApplication
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IService1" in both code and config file together.
-    [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(ICallBackService))]
-    public interface IWeatherService
+    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IWeatherServiceBasic" in both code and config file together.
+    [ServiceContract]
+    public interface IWeatherServiceBasic
     {
-        [OperationContract(IsOneWay = false, IsInitiating = true)]
-        string Subscribe();
-        [OperationContract(IsOneWay = false, IsInitiating = true)]
-        string Unsubscribe();
-        [OperationContract(IsOneWay = true)]
-        void Broadcast(Message message);
-        [OperationContract(IsOneWay = false, IsInitiating = true)]
-        Message[] GetHistory();
-    }
-    public interface ICallBackService
-    {
-        [OperationContract(IsOneWay = true)]
-        void Update(Message message);
+        [OperationContract]
+        JavaMessage[] GetData();
     }
     [MessageContract]
-    public class Message
+    public class JavaMessage
     {
         private string place;
         private string time;
@@ -65,6 +53,5 @@ namespace WeatherServiceApplication
             get { return this.humidity; }
             set { this.humidity = value; }
         }
-
     }
 }
